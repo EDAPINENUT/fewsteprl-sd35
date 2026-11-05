@@ -1,0 +1,152 @@
+# S-term ablation of fewstepgrpo_mix.yaml: IDENTICAL except run_name / output_dir / the
+# no-s-term tag. The trainer (FlowGRPOTrainer) drops S = (t - r) * dF/dt and uses the
+# flow map's average velocity as the instantaneous one, so the central-
+# difference keys below are unread.
+distributed:
+  fsdp_sharding: full_shard
+  strategy: fsdp
+eval:
+  dataset: drawbench
+  dataset_path: dataset
+  enabled: true
+  eval_batch_size: 16
+  eval_guidance_scale: 1.0
+  eval_interval: 50
+  eval_num_steps: 4
+  eval_prompt_source: dataset
+  eval_seed: 12345
+  num_media_images: 64
+  reward_ckpt_path: ./models/reward_ckpts
+  reward_dataset_map:
+    aesthetic: drawbench
+    clipscore: drawbench
+    hpsv2: drawbench
+    ocr: ocr
+    pickscore: drawbench
+  reward_fn:
+    aesthetic: 1.0
+    clipscore: 1.0
+    hpsv2: 1.0
+    ocr: 1.0
+    pickscore: 1.0
+fewstep_rl:
+  adv_clip_max: 5.0
+  beta: 0.1
+  # PPO ratio-clip epsilon, chosen to keep ``clipfrac`` around 0.3. Well above
+  # ~0.4 the clip zeroes most of each batch's gradient and throttles learning
+  # (grad_norm and reward fall); near 0 the trust region never engages.
+  clip_range: 0.003
+  grpo_noise_level: 0.25
+  cd_velocity_source: noise_minus_x0
+  central_diff_epsilon: 5.0
+  consistency_ratio: 0.25
+  decay_type: 1
+  diffusion_ratio: 0.5
+  kl_weight: 0.0001
+  log_sample_images: 8
+  num_batches_per_epoch: 16
+  num_epochs: 10000
+  num_image_per_prompt: 24
+  num_inner_epochs: 1
+  num_training_timesteps_per_sample: 4
+  per_prompt_global_std: true
+  per_prompt_stat_tracking: true
+  reward_ckpt_path: ./models/reward_ckpts
+  # Train on clipscore + hpsv2 + pickscore, as in every mix config. Eval also
+  # scores aesthetic and ocr, which stay held out: a rise in them is evidence
+  # of generalization rather than direct optimization.
+  reward_fn:
+    clipscore: 1.0
+    hpsv2: 1.0
+    pickscore: 1.0
+  rl_decay_interval: 1
+  rl_inner_batch_size: 0
+  rl_max_timestep: 1000
+  rl_min_timestep: 0
+  rl_sample_use_ema: false
+  rl_start_epoch: 0
+  sampling_guidance_scale: 1.0
+  sampling_num_steps: 4
+  share_cd_with_old: true
+  text_max_sequence_length: 128
+  use_ref_v_model: false
+  # Required by the GRPO trainers: the jump-and-renoise (SDE) rollout produces
+  # the stochastic transitions the likelihood ratio scores; an ODE rollout's
+  # steps are deterministic.
+  rollout_type: sde
+  # Required: the GRPO trainers replay the rollout's own (x_t, t) -> (x_r, r)
+  # transitions rather than drawing fresh (t, r), so _rl_train_phase raises
+  # without the stored intermediates.
+  reuse_x_t: true
+
+flowmap_model:
+  deltatime_type: r
+  enabled: true
+  gate_value: 0.25
+logging:
+  enabled: true
+  entity: ''
+  project: fewsteprl
+  run_name: flowgrpo_mix
+  tags:
+  - no-s-term
+  - sd35m
+  - fewstep-rl
+  - kl-u
+  - mixed
+  - grpo
+  - vform
+  - eta025_clip3e3
+  - klw1e-4
+  - '512'
+model:
+  dtype: bf16
+  generator_init_path: ''
+  generator_lora:
+    enabled: true
+    init_lora_weights: gaussian
+    load_path: ''
+    lora_alpha: 64
+    merge_before_training: true
+    pre_merge_paths: []
+    rank: 32
+    target_modules:
+    - attn.to_q
+    - attn.to_k
+    - attn.to_v
+    - attn.to_out.0
+    - attn.add_k_proj
+    - attn.add_v_proj
+    - attn.add_q_proj
+    - attn.to_add_out
+  gradient_checkpointing: true
+  image_resolution: 512
+  model_type: sd35
+  pretrained_path: models/stable-diffusion-3.5-medium
+output_dir: ./outputs/flowgrpo_mix
+prompt_path: dataset/pickscore
+solver:
+  generator:
+    beta1: 0.9
+    beta2: 0.999
+    eps: 1.0e-08
+    # 3e-6, as in the other configs. AdamW with eps=1e-8 is effectively
+    # scale-invariant at this gradient magnitude (per-param RMS ~1e-6, i.e.
+    # 100x+ above eps), so grad_norm does NOT set the step size -- lr does, and
+    # max_grad_norm clipping is largely undone by the optimizer.
+    lr: 3.0e-06
+    max_grad_norm: 1.0
+    warmup_steps: 0
+    weight_decay: 0.0001
+train:
+  autocast_dtype: bf16
+  batch_size: 9
+  ema_decay: 0.9
+  ema_every: 1
+  gradient_accumulation_steps: 1
+  log_interval: 1
+  resume_from: ''
+  save_interval: 100
+  seed: 42
+  total_steps: 0
+  use_ema: true

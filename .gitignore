@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+.pytest_cache/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Run outputs (training runs, eval samples, wandb)
+outputs/
+wandb/
+inference_outputs/
+
+# Downloaded weights / HF cache / reward checkpoints (download_scripts/).
+# Leading slash is load-bearing: an unanchored `models/` also matches the
+# source package `fewsteprl/models/`.
+/models/
+
+# Stage-3 LoRAs (checkpoints/<arm>/checkpoint-*/generator_ema.pt) are tracked
+# with Git LFS (.gitattributes). The aux v-predictor weights (~9.9 GB each) are
+# distributed separately.
+checkpoints/aux_vel/**/*.safetensors
+
+# Logs
+*.log
+
+# Local OCR caches
+.paddleocr/
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store

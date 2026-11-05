@@ -1,0 +1,46 @@
+# Offline sampling protocol, aligned with the training-time eval block of every
+# scripts/train/configs/<arm>.yaml: 4-step flow-map ODE, guidance 1.0, 512 px,
+# seed 12345, text_max_sequence_length 128.
+#
+# Stage 1 + Stage 2 are always loaded; scripts/eval/sample.sh fills in
+# stage3_lora_path (num_stages=3) or drops to num_stages=2 for the step-0
+# baseline, and sets prompt_file / output_dir per run.
+pretrained_path: models/stable-diffusion-3.5-medium
+dtype: bf16
+image_resolution: 512
+num_stages: 3
+stage1_lora_path: models/pretrained/meanflownft_loras/anyflow_pretrain/generator_ema.pt
+stage2_lora_path: models/pretrained/meanflownft_loras/anyflow_onpolicy/generator_ema.pt
+stage3_lora_path: ''
+lora_rank: 32
+lora_alpha: 64
+lora_target_modules:
+- attn.to_q
+- attn.to_k
+- attn.to_v
+- attn.to_out.0
+- attn.add_k_proj
+- attn.add_v_proj
+- attn.add_q_proj
+- attn.to_add_out
+flowmap_gate_value: 0.25
+flowmap_deltatime_type: r
+num_steps: 4
+normal_num_steps: 40
+normal_guidance_scale: 4.5
+text_max_sequence_length: 128
+seed: 12345
+batch_size: 16
+prompts: []
+prompt_file: dataset/drawbench/test.txt
+# 0 = every prompt in the file (the training-time eval also uses the full test split).
+max_prompts: 0
+output_dir: ./outputs/eval/unset
+# Scoring is done separately by scripts/eval/score.py on the saved PNGs.
+eval_reward: false
+reward_fn: {}
+reward_dataset_map: {}
+dataset_path: dataset
+reward_ckpt_path: models/reward_ckpts
+distributed: false
+strategy: fsdp

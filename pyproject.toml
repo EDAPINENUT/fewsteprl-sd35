@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fewsteprl-sd35"
+version = "0.1.0"
+description = "Few-step reinforcement learning for SD3.5-Medium flow-map generators"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.2.0",
+    "torchvision>=0.17.0",
+    "diffusers>=0.32.0",
+    "transformers>=4.57.0",
+    "accelerate>=1.0.0",
+    "peft>=0.17.0",
+    "safetensors>=0.7.0",
+    "sentencepiece",
+    "protobuf",
+    "hpsv2x>=1.2.0",
+    "pyyaml>=6.0",
+    "wandb>=0.16.0",
+    "numpy>=1.24.0",
+    "Pillow>=10.0.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["fewsteprl*"]

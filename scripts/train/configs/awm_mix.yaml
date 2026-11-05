@@ -1,0 +1,161 @@
+# S-term ablation of meanflowawm_mix.yaml: IDENTICAL except run_name / output_dir / the
+# no-s-term tag. The trainer (AWMTrainer) drops S = (t - r) * dF/dt and uses the
+# flow map's average velocity as the instantaneous one, so the central-
+# difference keys below are unread.
+distributed:
+  fsdp_sharding: full_shard
+  strategy: fsdp
+eval:
+  dataset: drawbench
+  dataset_path: dataset
+  enabled: true
+  eval_batch_size: 16
+  eval_guidance_scale: 1.0
+  eval_interval: 50
+  eval_num_steps: 4
+  eval_prompt_source: dataset
+  eval_seed: 12345
+  num_media_images: 64
+  reward_ckpt_path: ./models/reward_ckpts
+  reward_dataset_map:
+    aesthetic: drawbench
+    clipscore: drawbench
+    hpsv2: drawbench
+    ocr: ocr
+    pickscore: drawbench
+  reward_fn:
+    aesthetic: 1.0
+    clipscore: 1.0
+    hpsv2: 1.0
+    ocr: 1.0
+    pickscore: 1.0
+fewstep_rl:
+  adv_clip_max: 5.0
+  # Unread by the AWM trainers. The anchor-based trainers use beta as the probe
+  # half-width; AWM's corresponding slot is the likelihood ratio's temperature,
+  # which is pinned to sigma = t by the algebra
+  # (MeanFlowAWMTrainer.decoupled_weights), not configured. Left at the shared
+  # default so a diff against the other configs stays readable.
+  beta: 0.1
+  # MeanFlowAWMTrainer converts u -> v through the MeanFlow identity before the
+  # jump to x_0, so it needs the shared central difference on old_model; these
+  # three keys configure it (unread here: AWMTrainer drops S).
+  cd_velocity_source: noise_minus_x0
+  central_diff_epsilon: 5.0
+  consistency_ratio: 0.25
+  decay_type: 1
+  diffusion_ratio: 0.5
+  kl_weight: 0.0001
+  log_sample_images: 8
+  num_batches_per_epoch: 16
+  num_epochs: 10000
+  num_image_per_prompt: 24
+  num_inner_epochs: 1
+  num_training_timesteps_per_sample: 4
+  per_prompt_global_std: true
+  per_prompt_stat_tracking: true
+  reward_ckpt_path: ./models/reward_ckpts
+  # Train on clipscore + hpsv2 + pickscore, as in every mix config. Eval also
+  # scores aesthetic and ocr, which stay held out: a rise in them is evidence
+  # of generalization rather than direct optimization.
+  reward_fn:
+    clipscore: 1.0
+    hpsv2: 1.0
+    pickscore: 1.0
+  rl_decay_interval: 1
+  rl_inner_batch_size: 0
+  rl_max_timestep: 1000
+  # 0 lets t reach the small-t tail, where AWM's ``omega = adv / (2 t**2)`` blows
+  # up the LOGGED loss (the gradient is t-independent).
+  # ``MeanFlowAWMTrainer._SIGMA_MIN`` floors it instead of raising this, so the
+  # (t, r) grid stays identical to the other arms.
+  rl_min_timestep: 0
+  rl_sample_use_ema: false
+  rl_start_epoch: 0
+  sampling_guidance_scale: 1.0
+  sampling_num_steps: 4
+  # Mandatory for MeanFlowAWMTrainer (unread here): the CD runs once per step on
+  # old_model and is read by both the prediction and x_anchor_2, so they cannot
+  # disagree about S.
+  share_cd_with_old: true
+  text_max_sequence_length: 128
+  use_ref_v_model: false
+  # --- The keys that differ from meanflownft_mix.yaml ---------------------
+  # PPO ratio-clip epsilon. Check ``clipfrac`` around step 20 and aim for
+  # 0.25-0.35: much higher and the trust region throttles learning, so loosen
+  # if it stays above ~0.45; tighten if it is below ~0.10.
+  clip_range: 0.002
+  # AWM re-noises x_0 at a fresh (t, r) and denoises it back (the base
+  # _rl_train_phase, fresh three-mode (t, r) per iteration), so unlike GRPO it
+  # needs neither an SDE rollout nor the rollout's stored intermediates.
+  rollout_type: ode
+  reuse_x_t: false
+flowmap_model:
+  deltatime_type: r
+  enabled: true
+  gate_value: 0.25
+logging:
+  enabled: true
+  entity: ''
+  project: fewsteprl
+  run_name: awm_mix
+  tags:
+  - no-s-term
+  - sd35m
+  - fewstep-rl
+  - kl-u
+  - mixed
+  - awm
+  - klw1e-4
+  - '512'
+model:
+  dtype: bf16
+  generator_init_path: ''
+  generator_lora:
+    enabled: true
+    init_lora_weights: gaussian
+    load_path: ''
+    lora_alpha: 64
+    merge_before_training: true
+    pre_merge_paths: []
+    rank: 32
+    target_modules:
+    - attn.to_q
+    - attn.to_k
+    - attn.to_v
+    - attn.to_out.0
+    - attn.add_k_proj
+    - attn.add_v_proj
+    - attn.add_q_proj
+    - attn.to_add_out
+  gradient_checkpointing: true
+  image_resolution: 512
+  model_type: sd35
+  pretrained_path: models/stable-diffusion-3.5-medium
+output_dir: ./outputs/awm_mix
+prompt_path: dataset/pickscore
+solver:
+  generator:
+    beta1: 0.9
+    beta2: 0.999
+    eps: 1.0e-08
+    # 3e-6, as in the other configs. AdamW is effectively scale-invariant at
+    # this gradient magnitude, so lr -- not grad_norm -- sets the step. AWM's
+    # grad_norm is large and clips to max_grad_norm=1.0 every step, the same
+    # regime as the NFT trainers, so the same lr gives a matched effective step.
+    lr: 3.0e-06
+    max_grad_norm: 1.0
+    warmup_steps: 0
+    weight_decay: 0.0001
+train:
+  autocast_dtype: bf16
+  batch_size: 9
+  ema_decay: 0.9
+  ema_every: 1
+  gradient_accumulation_steps: 1
+  log_interval: 1
+  resume_from: ''
+  save_interval: 100
+  seed: 42
+  total_steps: 0
+  use_ema: true

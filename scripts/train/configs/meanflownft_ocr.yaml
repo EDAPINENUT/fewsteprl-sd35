@@ -1,0 +1,180 @@
+model:
+  pretrained_path: models/stable-diffusion-3.5-medium
+  generator_init_path: ''
+  fake_score_init_path: ''
+  teacher_init_path: ''
+  model_type: sd35
+  gradient_checkpointing: true
+  dtype: bf16
+  image_resolution: 512
+  generator_lora:
+    enabled: true
+    rank: 32
+    lora_alpha: 64
+    target_modules:
+    - attn.to_q
+    - attn.to_k
+    - attn.to_v
+    - attn.to_out.0
+    - attn.add_k_proj
+    - attn.add_v_proj
+    - attn.add_q_proj
+    - attn.to_add_out
+    init_lora_weights: gaussian
+    load_path: ./models/pretrained/meanflownft_loras/anyflow_onpolicy/generator_ema.pt
+    pre_merge_paths:
+    - ./models/pretrained/meanflownft_loras/anyflow_pretrain/generator_ema.pt
+    merge_before_training: true
+  fake_score_lora:
+    enabled: false
+    rank: 32
+    lora_alpha: 8
+    target_modules:
+    - attn.to_q
+    - attn.to_k
+    - attn.to_v
+    - attn.to_out.0
+    init_lora_weights: gaussian
+    load_path: ''
+    pre_merge_paths: []
+    merge_before_training: false
+flowmap_model:
+  enabled: true
+  gate_value: 0.25
+  deltatime_type: r
+anyflow_pretrain:
+  diffusion_ratio: 0.25
+  consistency_ratio: 0.25
+  epsilon: 0.5
+  cd_velocity_source: noise_minus_x0
+  v_target_source: noise_minus_x0
+  forward_guidance_scale: 1.0
+  weight_type: gaussian
+  negative_embedding_path: ''
+  drop_text_ratio: 0.1
+  ema_warmup_steps: 0
+anyflow_onpolicy:
+  num_inference_steps_list:
+  - 4
+  - 8
+  - 16
+  - 32
+  dmd_weight: 1.0
+  dmd_batch_size: 0
+  dmd_min_timestep: 0
+  dmd_max_timestep: 1000
+  real_guidance_scale: 0.0
+  gradient_normalization: true
+  cotrain_forward_kl: true
+  discriminator_update_ratio: 1
+  rollout_detach_between_jumps: false
+  rollout_full_steps: false
+anyflow_dmd:
+  rollout_batch_size: 0
+  fm_inner_batchsize: 0
+  num_inner_epochs_fake: 1
+  freq_generator_update: 1
+  dmd_batch_size: 0
+  generator_rollout_source: fresh_with_grad
+fewstep_rl:
+  num_epochs: 10000
+  num_batches_per_epoch: 16
+  num_inner_epochs: 1
+  rl_inner_batch_size: 0
+  rl_start_epoch: 0
+  num_image_per_prompt: 24
+  rl_sample_use_ema: false
+  sampling_num_steps: 4
+  sampling_guidance_scale: 1.0
+  text_max_sequence_length: 128
+  per_prompt_stat_tracking: true
+  per_prompt_global_std: true
+  weight_advantages: false
+  adv_clip_max: 5.0
+  beta: 0.1
+  kl_weight: 0.0001
+  decay_type: 1
+  rl_decay_interval: 1
+  reward_fn:
+    ocr: 1.0
+  reward_ckpt_path: ./models/reward_ckpts
+  log_sample_images: 8
+  central_diff_epsilon: 5.0
+  cd_velocity_source: noise_minus_x0
+  share_cd_with_old: true
+  num_training_timesteps_per_sample: 4
+  rl_min_timestep: 0
+  rl_max_timestep: 1000
+  diffusion_ratio: 0.5
+  consistency_ratio: 0.25
+  use_ref_v_model: false
+  guidance_scale: 1.0
+solver:
+  generator:
+    lr: 3.0e-06
+    warmup_steps: 0
+    beta1: 0.9
+    beta2: 0.999
+    eps: 1.0e-08
+    weight_decay: 0.0001
+    max_grad_norm: 1.0
+  fake_score:
+    lr: 1.0e-06
+    warmup_steps: 500
+    beta1: 0.9
+    beta2: 0.999
+    eps: 1.0e-08
+    weight_decay: 0.0
+    max_grad_norm: 1.0
+train:
+  total_steps: 0
+  save_interval: 100
+  log_interval: 1
+  seed: 42
+  batch_size: 9
+  gradient_accumulation_steps: 1
+  autocast_dtype: bf16
+  resume_from: ''
+  use_ema: true
+  ema_decay: 0.9
+  ema_every: 1
+distributed:
+  strategy: fsdp
+  fsdp_sharding: full_shard
+  ddp_find_unused_parameters: null
+logging:
+  project: fewsteprl
+  run_name: meanflownft_ocr
+  entity: ''
+  tags:
+  - sd35m
+  - fewstep-rl
+  - kl-u
+  - ocr
+  - klw1e-4
+  - align-old-stage3
+  - '512'
+  enabled: true
+eval:
+  enabled: true
+  eval_interval: 50
+  eval_prompt_source: dataset
+  eval_prompt_path: prompts.json
+  dataset: ocr
+  dataset_path: dataset
+  reward_fn:
+    aesthetic: 1.0
+    clipscore: 1.0
+    ocr: 1.0
+  reward_dataset_map:
+    aesthetic: ocr
+    clipscore: ocr
+    ocr: ocr
+  reward_ckpt_path: ./models/reward_ckpts
+  eval_num_steps: 4
+  eval_guidance_scale: 1.0
+  eval_batch_size: 16
+  num_media_images: 64
+  eval_seed: 12345
+prompt_path: dataset/ocr
+output_dir: ./outputs/meanflownft_ocr
