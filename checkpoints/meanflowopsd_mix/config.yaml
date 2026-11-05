@@ -186,7 +186,7 @@ distributed:
   ddp_find_unused_parameters: null
 logging:
   project: fewsteprl
-  run_name: sd35m-opsd-vtnocd-tLogNorm@0.278-rRandom-noCD-mixedgrad
+  run_name: meanflowopsd_mix
   entity: ''
   tags:
   - sd35m

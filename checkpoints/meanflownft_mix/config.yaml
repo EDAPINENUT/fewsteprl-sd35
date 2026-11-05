@@ -146,7 +146,7 @@ distributed:
   ddp_find_unused_parameters: null
 logging:
   project: fewsteprl
-  run_name: sd35m-r5-klu-mixed-klw1e4
+  run_name: meanflownft_mix
   entity: ''
   tags:
   - sd35m

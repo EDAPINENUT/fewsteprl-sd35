@@ -157,7 +157,7 @@ distributed:
   ddp_find_unused_parameters: null
 logging:
   project: fewsteprl
-  run_name: sd35m-aux-vel
+  run_name: aux_vel_mix
   entity: ''
   tags:
   - sd35m

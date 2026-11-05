@@ -158,7 +158,7 @@ distributed:
   ddp_find_unused_parameters: null
 logging:
   project: fewsteprl
-  run_name: sd35m-dmdnft-klu-auxv-ocr-klw1e4
+  run_name: dmdnft_ocr
   entity: ''
   tags:
   - sd35m

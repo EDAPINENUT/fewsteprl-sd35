@@ -184,7 +184,7 @@ distributed:
   ddp_find_unused_parameters: null
 logging:
   project: fewsteprl
-  run_name: dmdawm_nocd_u_ocr
+  run_name: dmdawm_ocr
   entity: ''
   tags:
   - sd35m

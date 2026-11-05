@@ -162,7 +162,7 @@ distributed:
   ddp_find_unused_parameters: null
 logging:
   project: fewsteprl
-  run_name: sd35m-awm-klu-ocr-klw1e4
+  run_name: meanflowawm_ocr
   entity: ''
   tags:
   - sd35m

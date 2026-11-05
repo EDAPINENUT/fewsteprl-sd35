@@ -184,7 +184,7 @@ distributed:
   ddp_find_unused_parameters: null
 logging:
   project: fewsteprl
-  run_name: meanflownft_klu_ocr_to200
+  run_name: meanflownft_ocr
   entity: ''
   tags:
   - sd35m

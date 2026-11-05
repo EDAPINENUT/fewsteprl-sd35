@@ -186,7 +186,7 @@ distributed:
   ddp_find_unused_parameters: null
 logging:
   project: fewsteprl
-  run_name: meanflowreflmx_v_mix
+  run_name: reflmx_mix
   entity: ''
   tags:
   - sd35m

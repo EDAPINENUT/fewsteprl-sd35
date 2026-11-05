@@ -164,7 +164,7 @@ distributed:
   ddp_find_unused_parameters: null
 logging:
   project: fewsteprl
-  run_name: sd35m-grpoV-mix-eta025_clip3e3
+  run_name: fewstepgrpo_mix
   entity: ''
   tags:
   - sd35m

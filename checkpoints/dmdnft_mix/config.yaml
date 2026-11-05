@@ -160,7 +160,7 @@ distributed:
   ddp_find_unused_parameters: null
 logging:
   project: fewsteprl
-  run_name: sd35m-dmdnft-klu-auxv-mixed-klw1e4
+  run_name: dmdnft_mix
   entity: ''
   tags:
   - sd35m

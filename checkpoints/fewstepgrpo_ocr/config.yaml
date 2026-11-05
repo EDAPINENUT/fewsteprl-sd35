@@ -162,7 +162,7 @@ distributed:
   ddp_find_unused_parameters: null
 logging:
   project: fewsteprl
-  run_name: sd35m-grpoV-ocr-eta025_clip004
+  run_name: fewstepgrpo_ocr
   entity: ''
   tags:
   - sd35m
