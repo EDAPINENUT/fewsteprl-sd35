@@ -6,7 +6,7 @@
     1: base + Stage 1 AnyFlow-pretrain LoRA
     2: base + Stage 1 + Stage 2 AnyFlow on-policy LoRAs
     3: base + Stage 1 + Stage 2 + Stage 3 RL LoRA
-       (e.g. ``checkpoints/<arm>/checkpoint-<step>/generator_ema.pt``)
+       (e.g. ``checkpoints/<trial>/checkpoint-<step>/generator_ema.pt``)
 
 LoRAs are always loaded in order; Stage 2 or Stage 3 can never be loaded
 alone. Earlier stages are merged into the base weights and the latest stage

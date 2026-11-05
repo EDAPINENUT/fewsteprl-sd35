@@ -1,11 +1,11 @@
 # Released checkpoints
 
 One Stage-3 LoRA per experiment, plus the two auxiliary v-predictors that the
-`dmd*` arms warm-start from. Every experiment name matches its launcher
-`scripts/train/<arm>.sh` and config `scripts/train/configs/<arm>.yaml`.
+`dmd*` trials warm-start from. Every experiment name matches its launcher
+`scripts/train/<trial>.sh` and config `scripts/train/configs/<trial>.yaml`.
 
 ```
-checkpoints/<arm>/
+checkpoints/<trial>/
   config.yaml                          # the config the run saved (paths made relative)
   checkpoint-<step>/generator_ema.pt   # EMA generator: Stage-3 LoRA + delta_embedder
 checkpoints/aux_vel/{mix,ocr}/
@@ -22,7 +22,7 @@ repository; they will be released on Hugging Face soon. Only the runs'
 SD3.5-Medium + the AnyFlow Stage-1 and Stage-2 LoRAs
 (`models/pretrained/meanflownft_loras/{anyflow_pretrain,anyflow_onpolicy}`),
 never alone -- `inference.py` with `num_stages=3` does this, and
-`scripts/eval/sample.sh <arm>` wraps it.
+`scripts/eval/sample.sh <trial>` wraps it.
 
 ## Index
 
@@ -39,7 +39,7 @@ paper (Tab. 6); rows at other steps (`fewstepgrpo_mix` 300, `dmdawm_ocr` and
 
 ### Mixed reward (train: clipscore + hpsv2 + pickscore)
 
-| arm | trainer | step | aesthetic | clipscore | hpsv2 | pickscore | ocr (held out) | mean | source |
+| trial | trainer | step | aesthetic | clipscore | hpsv2 | pickscore | ocr (held out) | mean | source |
 |---|---|---|---|---|---|---|---|---|---|
 | step 0 (Stage 1+2 only) | -- | 0 | 5.363 | 0.2886 | 0.2974 | 0.8638 | 0.5071 | 7.320 | online |
 | meanflownft_mix | `meanflow_nft` | 400 | 6.043 | 0.2814 | 0.3289 | 0.8989 | 0.4607 | 8.012 | online |
@@ -55,7 +55,7 @@ paper (Tab. 6); rows at other steps (`fewstepgrpo_mix` 300, `dmdawm_ocr` and
 
 ### OCR reward (train: ocr)
 
-| arm | trainer | step | aesthetic | clipscore | ocr | mean | source |
+| trial | trainer | step | aesthetic | clipscore | ocr | mean | source |
 |---|---|---|---|---|---|---|---|
 | step 0 (Stage 1+2 only) | -- | 0 | 5.236 | 0.3196 | 0.4983 | 6.054 | online |
 | meanflownft_ocr | `meanflow_nft` | 200 | 4.394 | 0.2894 | 0.934 | 5.617 | offline; ocr from paper Tab. 6(a) |
@@ -70,9 +70,9 @@ with PaddleOCR 2.x scores (see `requirements.txt`).
 ## Notes per checkpoint
 
 - **Released step.** The final saved step of each run, except the two
-  `fewstepgrpo_*` arms, which release their peak step: `fewstepgrpo_mix` peaks
+  `fewstepgrpo_*` trials, which release their peak step: `fewstepgrpo_mix` peaks
   at 300 (mean 7.661), and `fewstepgrpo_ocr` collapses after step 200 (ocr
-  0.776 -> 0.03 by step 400). Every mix arm is released at or before step 400,
+  0.776 -> 0.03 by step 400). Every mix trial is released at or before step 400,
   the standard length (`dmdnft_mix` continued past 400 in its run; only its
   step-400 checkpoint is released).
 - **dmdnft_ocr aux init.** The released `dmdnft_ocr` checkpoint was trained with
@@ -93,14 +93,14 @@ with PaddleOCR 2.x scores (see `requirements.txt`).
   resumed 150-200) were trained in two legs; their `config.yaml` is the second
   leg's with `train.resume_from` cleared.
 - **meanflowopsd_mix / reflmx_mix** run with `fewstep_rl.disable_cd=true`.
-- **dmdawm_*** are the no-central-difference arms (`x_anchor_2 = x_t - t*u_old`).
+- **dmdawm_*** are the no-central-difference trials (`x_anchor_2 = x_t - t*u_old`).
 - Saved configs carry `fewstep_rl.num_epochs` = the step the run was stopped at
   (the shipped training configs keep 10000 and are stopped by hand), and the
-  `max_aux_sample` value the config class derived at load time for `dmd*` arms.
+  `max_aux_sample` value the config class derived at load time for `dmd*` trials.
 
 ## Provenance
 
-| arm | source run (`outputs/` of the original repo) |
+| trial | source run (`outputs/` of the original repo) |
 |---|---|
 | meanflownft_mix | `sd35m_mfnft_klu_mix/20260826_194032` |
 | nft_mix | `nft_mix/20261023_211056` |

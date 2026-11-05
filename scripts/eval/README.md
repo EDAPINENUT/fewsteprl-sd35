@@ -9,8 +9,8 @@ scripts/eval/
   configs/sample_sd35m_fewstep.yaml   sampling protocol (4-step, 512 px, seed 12345)
   sample.sh      <target> <prompt_set> [gpus]   -> outputs/eval/<tag>/<set>/*.png + metadata.json
   score.py       --sample_dir ... --metrics ...  -> score_<metric>.json + summary.json
-  eval_ckpt.sh   <target> [gpus]                 sample + score under the arm's protocol
-  eval_all.sh    [gpus] [targets...]             base + every checkpoints/<arm>, then collect
+  eval_ckpt.sh   <target> [gpus]                 sample + score under the trial's protocol
+  eval_all.sh    [gpus] [targets...]             base + every checkpoints/<trial>, then collect
   collect.py     [--out_root outputs/eval]       -> outputs/eval/summary.{csv,md}
 ```
 
@@ -43,7 +43,7 @@ the optional metrics). Download sources:
 |---|---|---|
 | SD3.5-Medium (gated) | [stabilityai/stable-diffusion-3.5-medium](https://huggingface.co/stabilityai/stable-diffusion-3.5-medium) | `models/stable-diffusion-3.5-medium/` |
 | AnyFlow Stage-1 / Stage-2 LoRAs | [Harahan/MeanFlowNFT](https://huggingface.co/Harahan/MeanFlowNFT) (`anyflow_pretrain/`, `anyflow_onpolicy/`) | `models/pretrained/meanflownft_loras/` |
-| Stage-3 checkpoints | Hugging Face (coming soon) | `checkpoints/<arm>/checkpoint-<step>/generator_ema.pt` |
+| Stage-3 checkpoints | Hugging Face (coming soon) | `checkpoints/<trial>/checkpoint-<step>/generator_ema.pt` |
 | **pickscore** | [yuvalkirstain/PickScore_v1](https://huggingface.co/yuvalkirstain/PickScore_v1) + processor of [laion/CLIP-ViT-H-14-laion2B-s32B-b79K](https://huggingface.co/laion/CLIP-ViT-H-14-laion2B-s32B-b79K) | `models/hf_cache/` |
 | **hpsv2** (v2.1) | [xswu/HPSv2](https://huggingface.co/xswu/HPSv2) `HPS_v2.1_compressed.pt` + `open_clip_pytorch_model.bin` from [laion/CLIP-ViT-H-14-laion2B-s32B-b79K](https://huggingface.co/laion/CLIP-ViT-H-14-laion2B-s32B-b79K) | `models/reward_ckpts/` |
 | **clipscore** | [openai/clip-vit-large-patch14](https://huggingface.co/openai/clip-vit-large-patch14) | `models/hf_cache/` |
@@ -72,7 +72,7 @@ Sampling matches the eval block of every training config: Stage 1 + Stage 2
 merged into SD3.5-M, the Stage-3 LoRA on top, **4-step flow-map ODE, guidance
 1.0, 512 px, seed 12345 (+ rank), `text_max_sequence_length` 128**, the full
 test split of each prompt set. `base` = Stage 1 + Stage 2 only, i.e. the step-0
-model every arm starts from.
+model every trial starts from.
 
 Which metric is scored on which prompts follows each config's
 `eval.reward_dataset_map`:

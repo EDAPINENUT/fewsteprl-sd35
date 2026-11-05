@@ -72,7 +72,7 @@ else
 fi
 
 # --- 2. AnyFlow Stage-1 / Stage-2 LoRAs -----------------------------------------
-# Every Stage-3 arm starts from SD3.5-M + Stage 1 (merged) + Stage 2 (merged).
+# Every Stage-3 trial starts from SD3.5-M + Stage 1 (merged) + Stage 2 (merged).
 echo "[2/6] Harahan/MeanFlowNFT: anyflow_pretrain + anyflow_onpolicy"
 "${HF[@]}" download Harahan/MeanFlowNFT \
     anyflow_pretrain/generator_ema.pt \

@@ -1,13 +1,13 @@
 #!/bin/bash
 # Shared launcher for the OPSD family (meanflowopsd_mix, reflmx_mix). Not
-# meant to be called directly: the scripts/train/<arm>.sh wrappers export
+# meant to be called directly: the scripts/train/<trial>.sh wrappers export
 # CONFIG / TRAINER_KEY / the Stage-1+2 LoRAs and exec this file.
 #
 # Prerequisites (see README.md, "Setup"):
 #   bash download_scripts/download_assets.sh
 #
 # Usage (via a wrapper):
-#   bash scripts/train/<arm>.sh [NUM_GPUS] [EXTRA_OVERRIDES...]
+#   bash scripts/train/<trial>.sh [NUM_GPUS] [EXTRA_OVERRIDES...]
 #
 # Smoke (1 GPU, tiny, no eval):
 #   bash scripts/train/meanflowopsd_mix.sh 1 \
@@ -15,8 +15,8 @@
 #       train.batch_size=4 fewstep_rl.num_epochs=2 eval.enabled=false \
 #       fewstep_rl.log_sample_images=0
 #
-# loss_policy / loss_unscaled are NOT comparable across arms (different
-# objectives). Compare rl_reward/* and the eval metrics. Within an OPSD arm,
+# loss_policy / loss_unscaled are NOT comparable across trials (different
+# objectives). Compare rl_reward/* and the eval metrics. Within an OPSD trial,
 # watch:
 #   rl_diagnostic/opsd_delta_res  -- mean ||xp - x_anchor|| / ||x_anchor||; pinned
 #                                    at rho means the trust region saturates every step
@@ -32,8 +32,8 @@ NUM_GPUS="${1:-8}"
 EXTRA_ARGS=("${@:2}")
 set --
 
-[[ -n "${CONFIG:-}" ]] || { echo "ERROR: CONFIG is not set; launch through scripts/train/<arm>.sh" >&2; exit 1; }
-[[ -n "${TRAINER_KEY:-}" ]] || { echo "ERROR: TRAINER_KEY is not set; launch through scripts/train/<arm>.sh" >&2; exit 1; }
+[[ -n "${CONFIG:-}" ]] || { echo "ERROR: CONFIG is not set; launch through scripts/train/<trial>.sh" >&2; exit 1; }
+[[ -n "${TRAINER_KEY:-}" ]] || { echo "ERROR: TRAINER_KEY is not set; launch through scripts/train/<trial>.sh" >&2; exit 1; }
 
 # --- Local asset defaults (populated by download_scripts/download_assets.sh) --
 SD35_PATH="${FEWSTEPRL_SD35_PATH:-${REPO_ROOT}/models/stable-diffusion-3.5-medium}"
@@ -41,7 +41,7 @@ export HF_HOME="${HF_HOME:-${REPO_ROOT}/models/hf_cache}"
 export FEWSTEPRL_REWARD_CKPT_PATH="${FEWSTEPRL_REWARD_CKPT_PATH:-${REPO_ROOT}/models/reward_ckpts}"
 export FEWSTEPRL_PADDLEOCR_V5_DIR="${FEWSTEPRL_PADDLEOCR_V5_DIR:-${REPO_ROOT}/models/paddleocr_v5}"
 
-# Same two-stage init as every other Stage-3 arm, so comparisons start from an
+# Same two-stage init as every other Stage-3 trial, so comparisons start from an
 # identical policy.
 LORA_DIR="${REPO_ROOT}/models/pretrained/meanflownft_loras"
 export PRETRAIN_LORA="${PRETRAIN_LORA:-${LORA_DIR}/anyflow_pretrain/generator_ema.pt}"

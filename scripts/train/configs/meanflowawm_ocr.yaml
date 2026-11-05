@@ -55,7 +55,7 @@ fewstep_rl:
   # 0 lets t reach the small-t tail, where AWM's ``omega = adv / (2 t**2)`` blows
   # up the LOGGED loss (the gradient is t-independent).
   # ``MeanFlowAWMTrainer._SIGMA_MIN`` floors it instead of raising this, so the
-  # (t, r) grid stays identical to the other arms; revisit that constant if this
+  # (t, r) grid stays identical to the other trials; revisit that constant if this
   # changes.
   rl_min_timestep: 0
   rl_sample_use_ema: false
@@ -73,7 +73,7 @@ fewstep_rl:
   # single step). Watch ``clipfrac``: the intended band is 0.05-0.2; if it
   # stays above that, loosen further.
   clip_range: 0.01
-  # No renoise to score on this arm, so the rollout does not have to be an SDE:
+  # No renoise to score on this trial, so the rollout does not have to be an SDE:
   # it only has to produce x_0 and its reward. AWM builds its own transition by
   # re-noising x_0 at a fresh (t, r), and that forward noising is where the
   # stochasticity comes from.

@@ -1,14 +1,14 @@
 #!/bin/bash
-# Shared launcher for the decoupled-loss family (every arm except the two OPSD
+# Shared launcher for the decoupled-loss family (every trial except the two OPSD
 # ones, which use _launcher_opsd.sh). Not meant to be called directly: the
-# scripts/train/<arm>.sh wrappers export CONFIG / TRAINER_KEY / the Stage-1+2
+# scripts/train/<trial>.sh wrappers export CONFIG / TRAINER_KEY / the Stage-1+2
 # LoRAs and exec this file.
 #
 # Prerequisites (see README.md, "Setup"):
 #   bash download_scripts/download_assets.sh
 #
 # Usage (via a wrapper):
-#   bash scripts/train/<arm>.sh [NUM_GPUS] [EXTRA_OVERRIDES...]
+#   bash scripts/train/<trial>.sh [NUM_GPUS] [EXTRA_OVERRIDES...]
 #
 # Environment overrides:
 #   FEWSTEPRL_SD35_PATH           SD3.5-Medium diffusers pipeline dir
@@ -26,8 +26,8 @@ NUM_GPUS="${1:-8}"
 EXTRA_ARGS=("${@:2}")
 set --
 
-[[ -n "${CONFIG:-}" ]] || { echo "ERROR: CONFIG is not set; launch through scripts/train/<arm>.sh" >&2; exit 1; }
-[[ -n "${TRAINER_KEY:-}" ]] || { echo "ERROR: TRAINER_KEY is not set; launch through scripts/train/<arm>.sh" >&2; exit 1; }
+[[ -n "${CONFIG:-}" ]] || { echo "ERROR: CONFIG is not set; launch through scripts/train/<trial>.sh" >&2; exit 1; }
+[[ -n "${TRAINER_KEY:-}" ]] || { echo "ERROR: TRAINER_KEY is not set; launch through scripts/train/<trial>.sh" >&2; exit 1; }
 
 # --- Local asset defaults (populated by download_scripts/download_assets.sh) --
 SD35_PATH="${FEWSTEPRL_SD35_PATH:-${REPO_ROOT}/models/stable-diffusion-3.5-medium}"

@@ -1,7 +1,7 @@
 """FewStepRL training entry point (Stage-3 RL on a few-step SD3.5-M flow map).
 
 Every trainer here reads the ``fewstep_rl`` config section and is launched by
-one of the ``scripts/train/<arm>.sh`` wrappers, which pin the trainer key:
+one of the ``scripts/train/<trial>.sh`` wrappers, which pin the trainer key:
 
 - ``meanflow_nft`` / ``nft_rl``: MeanFlowNFT and its S-term ablation.
 - ``dmdnft_rl`` / ``dmdawm_rl``: NFT / AWM variants built on an online-trained
@@ -69,7 +69,7 @@ def parse_args() -> argparse.Namespace:
         type=str,
         required=True,
         choices=list(TRAINER_REGISTRY.keys()),
-        help="Trainer key (pinned by scripts/train/<arm>.sh)",
+        help="Trainer key (pinned by scripts/train/<trial>.sh)",
     )
     parser.add_argument(
         "--override",

@@ -1,5 +1,5 @@
 # Offline sampling protocol, aligned with the training-time eval block of every
-# scripts/train/configs/<arm>.yaml: 4-step flow-map ODE, guidance 1.0, 512 px,
+# scripts/train/configs/<trial>.yaml: 4-step flow-map ODE, guidance 1.0, 512 px,
 # seed 12345, text_max_sequence_length 128.
 #
 # Stage 1 + Stage 2 are always loaded; scripts/eval/sample.sh fills in

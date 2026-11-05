@@ -64,7 +64,7 @@ fewstep_rl:
   # 0 lets t reach the small-t tail, where AWM's ``omega = adv / (2 t**2)`` blows
   # up the LOGGED loss (the gradient is t-independent).
   # ``MeanFlowAWMTrainer._SIGMA_MIN`` floors it instead of raising this, so the
-  # (t, r) grid stays identical to the other arms.
+  # (t, r) grid stays identical to the other trials.
   rl_min_timestep: 0
   rl_sample_use_ema: false
   rl_start_epoch: 0
