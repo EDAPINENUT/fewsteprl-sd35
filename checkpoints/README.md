@@ -35,28 +35,28 @@ ocr prompts), 4-step sampling, seed 12345, 512 px. Reproduce them with
 
 | trial | trainer | step | aesthetic | clipscore | hpsv2 | pickscore | ocr (held out) | mean |
 |---|---|---|---|---|---|---|---|---|
-| step 0 (Stage 1+2 only) | -- | 0 | 5.363 | 0.2886 | 0.2974 | 0.8638 | 0.5071 | 7.320 |
-| meanflownft_mix | `meanflow_nft` | 400 | 6.043 | 0.2814 | 0.3289 | 0.8989 | 0.4607 | 8.012 |
+| step 0 (Stage 1+2 only) | -- | 0 | 5.363 | 0.289 | 0.297 | 0.864 | 0.507 | 7.320 |
+| meanflownft_mix | `meanflow_nft` | 400 | 6.043 | 0.281 | 0.329 | 0.899 | 0.461 | 8.012 |
 | nft_mix | `nft_rl` | 400 | -- | -- | -- | -- | -- | -- |
-| dmdnft_mix | `dmdnft_rl` | 400 | 5.98 | 0.285 | 0.332 | 0.902 | 0.448 | 7.947 |
-| dmdawm_mix | `dmdawm_rl` | 400 | 5.86 | 0.281 | 0.326 | 0.891 | 0.424 | 7.782 |
-| fewstepgrpo_mix | `meanflowgrpo_rl` | 300 | 5.792 | 0.2811 | 0.3137 | 0.8733 | 0.4009 | 7.661 |
-| flowgrpo_mix | `flowgrpo_rl` | 400 | 5.564 | 0.2837 | 0.2968 | 0.8713 | 0.4843 | 7.500 |
-| meanflowawm_mix | `meanflowawm_rl` | 400 | 5.915 | 0.2786 | 0.3079 | 0.8902 | 0.4131 | 7.805 |
-| awm_mix | `awm_rl` | 400 | 6.046 | 0.2828 | 0.3332 | 0.8945 | 0.4278 | 7.984 |
-| meanflowopsd_mix | `meanflowopsd_rl` | 400 | 5.906 | 0.3217 | 0.3734 | 0.9458 | 0.4928 | 8.040 |
-| reflmx_mix | `meanflowrefl_rl` | 400 | 5.891 | 0.3172 | 0.3675 | 0.9378 | 0.5459 | 8.060 |
+| dmdnft_mix | `dmdnft_rl` | 400 | 5.980 | 0.285 | 0.332 | 0.902 | 0.448 | 7.947 |
+| dmdawm_mix | `dmdawm_rl` | 400 | 5.860 | 0.281 | 0.326 | 0.891 | 0.424 | 7.782 |
+| fewstepgrpo_mix | `meanflowgrpo_rl` | 300 | 5.792 | 0.281 | 0.314 | 0.873 | 0.401 | 7.661 |
+| flowgrpo_mix | `flowgrpo_rl` | 400 | 5.564 | 0.284 | 0.297 | 0.871 | 0.484 | 7.500 |
+| meanflowawm_mix | `meanflowawm_rl` | 400 | 5.915 | 0.279 | 0.308 | 0.890 | 0.413 | 7.805 |
+| awm_mix | `awm_rl` | 400 | 6.046 | 0.283 | 0.333 | 0.895 | 0.428 | 7.984 |
+| meanflowopsd_mix | `meanflowopsd_rl` | 400 | 5.906 | 0.322 | 0.373 | 0.946 | 0.493 | 8.040 |
+| reflmx_mix | `meanflowrefl_rl` | 400 | 5.891 | 0.317 | 0.368 | 0.938 | 0.546 | 8.060 |
 
 ### OCR reward (train: ocr)
 
 | trial | trainer | step | aesthetic | clipscore | ocr | mean |
 |---|---|---|---|---|---|---|
-| step 0 (Stage 1+2 only) | -- | 0 | 5.236 | 0.3196 | 0.4983 | 6.054 |
-| meanflownft_ocr | `meanflow_nft` | 200 | 4.394 | 0.2894 | 0.934 | 5.617 |
-| dmdnft_ocr | `dmdnft_rl` | 200 | 4.406 | 0.2946 | 0.8973 | 5.598 |
-| dmdawm_ocr | `dmdawm_rl` | 400 | 3.889 | 0.2703 | 0.9661 | 5.125 |
-| fewstepgrpo_ocr | `meanflowgrpo_rl` | 200 | 4.877 | 0.3251 | 0.7763 | 5.978 |
-| meanflowawm_ocr | `meanflowawm_rl` | 400 | 5.011 | 0.3112 | 0.9271 | 6.249 |
+| step 0 (Stage 1+2 only) | -- | 0 | 5.236 | 0.320 | 0.498 | 6.054 |
+| meanflownft_ocr | `meanflow_nft` | 200 | 4.394 | 0.289 | 0.934 | 5.617 |
+| dmdnft_ocr | `dmdnft_rl` | 200 | 4.406 | 0.295 | 0.897 | 5.598 |
+| dmdawm_ocr | `dmdawm_rl` | 400 | 3.889 | 0.270 | 0.966 | 5.125 |
+| fewstepgrpo_ocr | `meanflowgrpo_rl` | 200 | 4.877 | 0.325 | 0.776 | 5.978 |
+| meanflowawm_ocr | `meanflowawm_rl` | 400 | 5.011 | 0.311 | 0.927 | 6.249 |
 
 OCR numbers are PaddleOCR 3.x + PP-OCRv5 throughout; they are not comparable
 with PaddleOCR 2.x scores (see `requirements.txt`).
