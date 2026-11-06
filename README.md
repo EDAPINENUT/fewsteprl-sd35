@@ -140,7 +140,7 @@ NNODES=2 NODE_RANK=0 MASTER_ADDR=<host> bash scripts/train/reflmx_mix.sh 8
 
 Overrides are `key=value` on the config (`train.seed=1`,
 `eval.eval_interval=25`, ...). The configs keep `fewstep_rl.num_epochs: 10000`
-and runs are stopped by hand; the released checkpoints are at step 200-1000
+and runs are stopped by hand; the released checkpoints are at step 200-400
 (see `checkpoints/README.md`). `train.batch_size * total_gpus` must be
 divisible by `fewstep_rl.num_image_per_prompt` (24), which the launcher checks;
 the configs assume 8 GPUs (batch 9 x 8 = 72 = 3 prompts x 24 images).
