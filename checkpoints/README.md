@@ -13,9 +13,16 @@ checkpoints/aux_vel/{mix,ocr}/
   aux_v_transformer/                   # diffusers SD3Transformer2DModel (~9.9 GB)
 ```
 
-The weights (`generator_ema.pt` and `aux_v_transformer/`) are not in this
-repository; they will be released on Hugging Face soon. Only the runs'
-`config.yaml` and the aux transformers' `config.json` are tracked. The four `dmd*` launchers need them in place at
+The weights (`generator_ema.pt` and `aux_v_transformer/`) are on Hugging Face,
+[Delcher/fewsteprl-sd35](https://huggingface.co/Delcher/fewsteprl-sd35); only the runs' `config.yaml` and the aux
+transformers' `config.json` are tracked here. Download and verify them with
+
+```bash
+hf download Delcher/fewsteprl-sd35 --local-dir checkpoints --include "*.pt" "*.safetensors"
+cd checkpoints && shasum -a 256 -c SHA256SUMS
+```
+
+ The four `dmd*` launchers need them in place at
 `checkpoints/aux_vel/{mix,ocr}/aux_v_transformer/diffusion_pytorch_model.safetensors`.
 
 `generator_ema.pt` is a plain tensor state dict. It is applied **on top of**

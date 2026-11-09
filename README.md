@@ -10,7 +10,9 @@ Haitao Lin<sup>1,\*,†</sup>, Minsi Ren<sup>2,\*</sup>, Yang Li<sup>1,†</sup>
 
 <sub><sup>\*</sup>Equal contribution · <sup>†</sup>Project leader · <sup>‡</sup>Corresponding author: wutailin@westlake.edu.cn</sub>
 
-**Image (SD3.5-Medium) code** · video code: [fewsteprl-wan21](https://github.com/EDAPINENUT/fewsteprl-wan21) · [project page](https://edapinenut.github.io/fewsteprl.page/)
+[![arXiv](https://img.shields.io/badge/arXiv-2611.08240-b31b1b.svg)](https://arxiv.org/abs/2611.08240) [![Project page](https://img.shields.io/badge/Project-Page-1e4a8f.svg)](https://edapinenut.github.io/fewsteprl.page/) [![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Checkpoints-ffd21e.svg)](https://huggingface.co/Delcher/fewsteprl-sd35)
+
+**Image (SD3.5-Medium) code** · video code: [fewsteprl-wan21](https://github.com/EDAPINENUT/fewsteprl-wan21) · checkpoints: [🤗 Delcher/fewsteprl-sd35](https://huggingface.co/Delcher/fewsteprl-sd35)
 
 <a href="assets/gallery.mp4"><img src="assets/gallery.webp" width="100%" alt="FewStepRL gallery: 4-step images and videos"></a>
 
@@ -109,7 +111,7 @@ fewsteprl/               library: config, SD3.5 flow-map model, trainers, reward
 dataset/                 prompt sets: pickscore, ocr (train/test); drawbench, hpsv3, geneval2 (test)
 scripts/train/           <name>.sh launchers, shared _launcher_*.sh, configs/<name>.yaml
 scripts/eval/            sampling + reward scoring (see scripts/eval/README.md)
-checkpoints/             configs of the released runs (weights: coming soon on Hugging Face)
+checkpoints/             configs of the released runs (weights on Hugging Face)
 download_scripts/        download_assets.sh: SD3.5, Stage-1/2 LoRAs, reward models
 models/                  (created by download_assets.sh, not tracked)
 ```
@@ -119,6 +121,7 @@ models/                  (created by download_assets.sh, not tracked)
 ```bash
 pip install -r requirements.txt          # Python 3.10, CUDA 12.4, torch 2.6
 bash download_scripts/download_assets.sh # needs internet + an accepted SD3.5-M license
+hf download Delcher/fewsteprl-sd35 --local-dir checkpoints --include "*.pt" "*.safetensors"   # released checkpoints
 ```
 
 `download_assets.sh` places everything under `models/`; the launchers check for
@@ -160,6 +163,18 @@ bash scripts/eval/eval_all.sh 8                    # base + all checkpoints -> o
 
 Environment, scorer download links, protocol and caveats:
 [scripts/eval/README.md](scripts/eval/README.md).
+
+## Citation
+
+```bibtex
+@article{lin2026fewsteprl,
+  title   = {FewStepRL: Fine-tuning Few-step Diffusion Models with Reinforcement Learning},
+  author  = {Lin, Haitao and Ren, Minsi and Li, Yang and Ge, Xingtong and
+             Hu, Zheyuan and Hu, Peiyan and Wu, Tailin},
+  journal = {arXiv preprint arXiv:2611.08240},
+  year    = {2026}
+}
+```
 
 ## License
 
